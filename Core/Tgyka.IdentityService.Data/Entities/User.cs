@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Tgyka.IdentityService.Data.Base;
+using Tgyka.IdentityService.Database.Mssql.Data.Entity;
 
 namespace Tgyka.IdentityService.Data.Entities
 {
