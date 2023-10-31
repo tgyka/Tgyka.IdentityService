@@ -16,11 +16,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Repositories\" />
+    <ProjectReference Include="..\Databases\Tgyka.IdentityService.Database.Mssql\Tgyka.IdentityService.Database.Mssql.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Databases\Tgyka.IdentityService.Database.Mssql\Tgyka.IdentityService.Database.Mssql.csproj" />
+    <Folder Include="Configurations\" />
   </ItemGroup>
 
 </Project>

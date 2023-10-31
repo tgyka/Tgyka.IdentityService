@@ -13,6 +13,8 @@ namespace Tgyka.IdentityService.Data.Entities
     {
         public string Name { get; set; }
         public string Description { get; set; }
+        public virtual IEnumerable<UserRole> UserRoles { get; set; }
+        public virtual IEnumerable<RolePermission> RolePermissions { get; set; }
 
     }
 }
