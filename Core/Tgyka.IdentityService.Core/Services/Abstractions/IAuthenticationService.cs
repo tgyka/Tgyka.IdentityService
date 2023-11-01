@@ -8,5 +8,6 @@ namespace Tgyka.IdentityService.Core.Services.Abstractions
 {
     public interface IAuthenticationService
     {
+        string Login(string username,string password);
     }
 }
