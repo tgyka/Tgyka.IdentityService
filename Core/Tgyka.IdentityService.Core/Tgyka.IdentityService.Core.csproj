@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Tgyka.IdentityService.Data\Tgyka.IdentityService.Data.csproj" />
     <ProjectReference Include="..\Tgyka.IdentityService.JwtHelper\Tgyka.IdentityService.JwtHelper.csproj" />
   </ItemGroup>

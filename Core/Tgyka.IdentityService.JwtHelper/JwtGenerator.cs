@@ -6,27 +6,30 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Tgyka.IdentityService.JwtHelper.Models;
 
 namespace Tgyka.IdentityService.JwtHelper
 {
     public static class JwtGenerator
     {
-        public static string GenerateJwtToken(string username,int expireMinute)
+        public static string GenerateJwtToken(JwtModel jwtModel)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("your-secret-key"));
+            var securityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtModel.JwtConfig.Secret));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Sub, username),
+                new Claim("Username", jwtModel.Username),
+                new Claim("UserId", jwtModel.UserId.ToString()),
+                new Claim("Email", jwtModel.Email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             };
 
             var token = new JwtSecurityToken(
-                issuer: "your-issuer",
-                audience: "your-audience",
+                issuer: jwtModel.JwtConfig.Issuer,
+                audience: jwtModel.JwtConfig.Audience,
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(30),
+                expires: DateTime.UtcNow.AddMinutes(jwtModel.JwtConfig.ExpireMinute),
                 signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token);

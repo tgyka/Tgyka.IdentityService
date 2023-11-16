@@ -3,22 +3,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tgyka.IdentityService.Core.Models;
 using Tgyka.IdentityService.Core.Services.Abstractions;
 using Tgyka.IdentityService.Data.Repositories.Abstractions;
 using Tgyka.IdentityService.JwtHelper;
+using Tgyka.IdentityService.JwtHelper.Models;
 
 namespace Tgyka.IdentityService.Core.Services.Implementations
 {
     public class AuthenticationService: IAuthenticationService
     {
         private readonly IUserRepository _userRepository;
+        private readonly JwtConfigModel _jwtConfigModel;
 
-        public AuthenticationService(IUserRepository userRepository)
+        public AuthenticationService(IUserRepository userRepository, JwtConfigModel jwtConfigModel)
         {
             _userRepository = userRepository;
+            _jwtConfigModel = jwtConfigModel;
         }
 
-        public string Login(string username,string password)
+        public LoginResponseModel Login(string username,string password)
         {
             //TODO: password service
             var encrpytPassword = password;
@@ -26,10 +30,16 @@ namespace Tgyka.IdentityService.Core.Services.Implementations
             
             if(user == null)
             {
-                return "Error";
+                return null;
             }
 
-            return JwtGenerator.GenerateJwtToken(username, 30);
+            return new LoginResponseModel
+            {
+                AccessToken = JwtGenerator.GenerateJwtToken(new JwtModel(user.Id, user.Username, user.Email, _jwtConfigModel)),
+                Email = user.Email,
+                UserId = user.Id,
+                Username = user.Username
+            };
         }
     }
 }
