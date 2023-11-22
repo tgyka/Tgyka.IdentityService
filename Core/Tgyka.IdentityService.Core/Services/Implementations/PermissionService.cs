@@ -24,6 +24,11 @@ namespace Tgyka.IdentityService.Core.Services.Implementations
             _unitOfWork = unitOfWork;
         }
 
+        public Permission Get(int id)
+        {
+            return _permissionRepository.Get(r => r.Id == id);
+        }
+
         public PaginationList<Permission> ListPermissionByRole(int roleId)
         {
             return _permissionRepository.List(r => r.RolePermissions.Any(k => k.RoleId == roleId));

@@ -12,6 +12,7 @@ namespace Tgyka.IdentityService.Core.Services.Abstractions
     {
         Task<Role> Create(Role role);
         Task<Role> Delete(Role role);
+        Role Get(int id);
         PaginationList<Role> List();
         PaginationList<Role> ListRolesByUser(int userId);
         Task<Role> Update(Role role);

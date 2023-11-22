@@ -12,6 +12,7 @@ namespace Tgyka.IdentityService.Core.Services.Abstractions
     {
         Task<Permission> Create(Permission permission);
         Task<Permission> Delete(Permission permission);
+        Permission Get(int id);
         PaginationList<Permission> ListPermissionByRole(int roleId);
         PaginationList<Permission> ListPermissionByUser(int userId);
         Task<Permission> Update(Permission permission);

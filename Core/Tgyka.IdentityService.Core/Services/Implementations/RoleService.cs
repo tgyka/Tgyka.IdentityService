@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Tgyka.IdentityService.Core.Services.Abstractions;
 using Tgyka.IdentityService.Data.Entities;
 using Tgyka.IdentityService.Data.Repositories.Abstractions;
+using Tgyka.IdentityService.Data.Repositories.Implementations;
 using Tgyka.IdentityService.Database.Mssql.Data.Repository;
 using Tgyka.IdentityService.Database.Mssql.Data.UnitOfWork;
 using Tgyka.IdentityService.Database.Mssql.Model.RepositoryDtos;
@@ -22,6 +23,11 @@ namespace Tgyka.IdentityService.Core.Services.Implementations
         {
             _roleRepository = roleRepository;
             _unitOfWork = unitOfWork;
+        }
+
+        public Role Get(int id)
+        {
+            return _roleRepository.Get(r => r.Id == id);
         }
 
         public PaginationList<Role> ListRolesByUser(int userId)
