@@ -8,15 +8,16 @@ using Tgyka.IdentityService.Core.Services.Abstractions;
 using Tgyka.IdentityService.Data.Repositories.Abstractions;
 using Tgyka.IdentityService.JwtHelper;
 using Tgyka.IdentityService.JwtHelper.Models;
+using Tgyka.IdentityService.PasswordHelper;
 
 namespace Tgyka.IdentityService.Core.Services.Implementations
 {
-    public class AuthenticationService: IAuthenticationService
+    public class AuthService: IAuthService
     {
         private readonly IUserRepository _userRepository;
         private readonly JwtConfigModel _jwtConfigModel;
 
-        public AuthenticationService(IUserRepository userRepository, JwtConfigModel jwtConfigModel)
+        public AuthService(IUserRepository userRepository, JwtConfigModel jwtConfigModel)
         {
             _userRepository = userRepository;
             _jwtConfigModel = jwtConfigModel;
@@ -24,9 +25,7 @@ namespace Tgyka.IdentityService.Core.Services.Implementations
 
         public LoginResponseModel Login(string username,string password)
         {
-            //TODO: password service
-            var encrpytPassword = password;
-            var user = _userRepository.Get(r => r.Username == username && r.Password == encrpytPassword);
+            var user = _userRepository.Get(r => r.Username == username && PasswordValidator.VerifyPassword(password , r.Password));
             
             if(user == null)
             {
@@ -35,7 +34,7 @@ namespace Tgyka.IdentityService.Core.Services.Implementations
 
             return new LoginResponseModel
             {
-                AccessToken = JwtGenerator.GenerateJwtToken(new JwtModel(user.Id, user.Username, user.Email, _jwtConfigModel)),
+                AccessToken = JwtGenerator.GenerateJwt(new JwtModel(user.Id, user.Username, user.Email, _jwtConfigModel)),
                 Email = user.Email,
                 UserId = user.Id,
                 Username = user.Username

@@ -7,7 +7,7 @@ using Tgyka.IdentityService.Core.Models;
 
 namespace Tgyka.IdentityService.Core.Services.Abstractions
 {
-    public interface IAuthenticationService
+    public interface IAuthService
     {
         LoginResponseModel Login(string username,string password);
     }

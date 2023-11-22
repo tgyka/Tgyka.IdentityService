@@ -12,7 +12,7 @@ namespace Tgyka.IdentityService.JwtHelper
 {
     public static class JwtGenerator
     {
-        public static string GenerateJwtToken(JwtModel jwtModel)
+        public static string GenerateJwt(JwtModel jwtModel)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtModel.JwtConfig.Secret));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);

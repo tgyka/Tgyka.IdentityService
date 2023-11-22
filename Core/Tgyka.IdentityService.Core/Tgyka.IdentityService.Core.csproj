@@ -9,6 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Tgyka.IdentityService.Data\Tgyka.IdentityService.Data.csproj" />
     <ProjectReference Include="..\Tgyka.IdentityService.JwtHelper\Tgyka.IdentityService.JwtHelper.csproj" />
+    <ProjectReference Include="..\Tgyka.IdentityService.PasswordHelper\Tgyka.IdentityService.PasswordHelper.csproj" />
   </ItemGroup>
 
 </Project>
