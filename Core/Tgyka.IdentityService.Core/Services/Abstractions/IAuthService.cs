@@ -9,6 +9,6 @@ namespace Tgyka.IdentityService.Core.Services.Abstractions
 {
     public interface IAuthService
     {
-        LoginResponseModel Login(string username,string password);
+        AuthModel Login(string username,string password);
     }
 }

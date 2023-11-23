@@ -23,7 +23,7 @@ namespace Tgyka.IdentityService.Core.Services.Implementations
             _jwtConfigModel = jwtConfigModel;
         }
 
-        public LoginResponseModel Login(string username,string password)
+        public AuthModel Login(string username,string password)
         {
             var user = _userRepository.GetOne(r => r.Username == username && PasswordValidator.VerifyPassword(password , r.Password));
             
@@ -32,7 +32,7 @@ namespace Tgyka.IdentityService.Core.Services.Implementations
                 return null;
             }
 
-            return new LoginResponseModel
+            return new AuthModel
             {
                 AccessToken = JwtGenerator.GenerateJwt(new JwtModel(user.Id, user.Username, user.Email, _jwtConfigModel)),
                 Email = user.Email,
