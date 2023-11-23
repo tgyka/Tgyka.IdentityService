@@ -7,9 +7,10 @@ using Tgyka.IdentityService.Core.Services.Abstractions;
 using Tgyka.IdentityService.Data.Entities;
 using Tgyka.IdentityService.Data.Repositories.Abstractions;
 using Tgyka.IdentityService.Data.Repositories.Implementations;
+using Tgyka.IdentityService.Database.Mssql.Data.Enum;
 using Tgyka.IdentityService.Database.Mssql.Data.Repository;
 using Tgyka.IdentityService.Database.Mssql.Data.UnitOfWork;
-using Tgyka.IdentityService.Database.Mssql.Model.RepositoryDtos;
+using Tgyka.IdentityService.Database.Mssql.Model;
 
 namespace Tgyka.IdentityService.Core.Services.Implementations
 {
@@ -26,38 +27,38 @@ namespace Tgyka.IdentityService.Core.Services.Implementations
 
         public Permission Get(int id)
         {
-            return _permissionRepository.Get(r => r.Id == id);
+            return _permissionRepository.GetOne(r => r.Id == id);
         }
 
-        public PaginationList<Permission> ListPermissionByRole(int roleId)
+        public List<Permission> GetPermissionsByRole(int roleId)
         {
-            return _permissionRepository.List(r => r.RolePermissions.Any(k => k.RoleId == roleId));
+            return _permissionRepository.GetAll(r => r.RolePermissions.Any(k => k.RoleId == roleId));
         }
 
-        public PaginationList<Permission> ListPermissionByUser(int userId)
+        public List<Permission> GetPermissionsByUser(int userId)
         {
-            return _permissionRepository.List(r => r.RolePermissions.Any(k => k.Role.UserRoles.Any(t => t.UserId == userId)));
+            return _permissionRepository.GetAll(r => r.RolePermissions.Any(k => k.Role.UserRoles.Any(t => t.UserId == userId)));
         }
 
         public async Task<Permission> Create(Permission permission)
         {
-            var permissionResponse = _permissionRepository.Set(permission, CommandState.Create);
+            _permissionRepository.SetEntityState(permission, EntityCommandType.Create);
             await _unitOfWork.CommitAsync();
-            return permissionResponse;
+            return permission;
         }
 
         public async Task<Permission> Update(Permission permission)
         {
-            var permissionResponse = _permissionRepository.Set(permission, CommandState.Update);
+            _permissionRepository.SetEntityState(permission, EntityCommandType.Update);
             await _unitOfWork.CommitAsync();
-            return permissionResponse;
+            return permission;
         }
 
         public async Task<Permission> Delete(Permission permission)
         {
-            var permissionResponse = _permissionRepository.Set(permission, CommandState.SoftDelete);
+            _permissionRepository.SetEntityState(permission, EntityCommandType.SoftDelete);
             await _unitOfWork.CommitAsync();
-            return permissionResponse;
+            return permission;
         }
     }
 }

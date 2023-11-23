@@ -25,7 +25,7 @@ namespace Tgyka.IdentityService.Core.Services.Implementations
 
         public LoginResponseModel Login(string username,string password)
         {
-            var user = _userRepository.Get(r => r.Username == username && PasswordValidator.VerifyPassword(password , r.Password));
+            var user = _userRepository.GetOne(r => r.Username == username && PasswordValidator.VerifyPassword(password , r.Password));
             
             if(user == null)
             {

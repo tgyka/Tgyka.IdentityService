@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Tgyka.IdentityService.Core.Models;
 using Tgyka.IdentityService.Data.Entities;
-using Tgyka.IdentityService.Database.Mssql.Model.RepositoryDtos;
+using Tgyka.IdentityService.Database.Mssql.Model;
 
 namespace Tgyka.IdentityService.Core.Services.Abstractions
 {
@@ -14,7 +14,7 @@ namespace Tgyka.IdentityService.Core.Services.Abstractions
         Task<User> Create(User user);
         Task<User> Delete(User user);
         User Get(int id);
-        PaginationList<User> List(int page, int size);
+        List<User> GetAll(int page, int size);
         Task<User> Update(User user);
     }
 }

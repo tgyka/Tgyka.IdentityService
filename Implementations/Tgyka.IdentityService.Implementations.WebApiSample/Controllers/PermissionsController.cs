@@ -19,13 +19,13 @@ namespace Tgyka.IdentityService.Implementations.WebApiSample.Controllers
         [HttpGet("getAllByUserId")]
         public IActionResult GetAllByUserId(int userId)
         {
-            return Ok(_permissionService.ListPermissionByUser(userId));
+            return Ok(_permissionService.GetPermissionsByUser(userId));
         }
 
         [HttpGet("getAllByRoleId")]
         public IActionResult GetAllByRoleId(int roleId)
         {
-            return Ok(_permissionService.ListPermissionByRole(roleId));
+            return Ok(_permissionService.GetPermissionsByRole(roleId));
         }
 
         [HttpPost]

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Tgyka.IdentityService.Data.Entities;
-using Tgyka.IdentityService.Database.Mssql.Model.RepositoryDtos;
+using Tgyka.IdentityService.Database.Mssql.Model;
 
 namespace Tgyka.IdentityService.Core.Services.Abstractions
 {
@@ -13,8 +13,8 @@ namespace Tgyka.IdentityService.Core.Services.Abstractions
         Task<Role> Create(Role role);
         Task<Role> Delete(Role role);
         Role Get(int id);
-        PaginationList<Role> List();
-        PaginationList<Role> ListRolesByUser(int userId);
+        List<Role> GetAll();
+        List<Role> GetRolesByUser(int userId);
         Task<Role> Update(Role role);
     }
 }

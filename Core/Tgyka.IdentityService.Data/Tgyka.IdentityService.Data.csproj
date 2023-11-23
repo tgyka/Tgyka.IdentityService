@@ -19,8 +19,4 @@
     <ProjectReference Include="..\Databases\Tgyka.IdentityService.Database.Mssql\Tgyka.IdentityService.Database.Mssql.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Configurations\" />
-  </ItemGroup>
-
 </Project>

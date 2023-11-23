@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Tgyka.IdentityService.Core.Models;
 using Tgyka.IdentityService.Data.Entities;
+using Tgyka.IdentityService.Database.Mssql.Model;
 using Tgyka.IdentityService.JwtHelper;
 using Tgyka.IdentityService.JwtHelper.Models;
 

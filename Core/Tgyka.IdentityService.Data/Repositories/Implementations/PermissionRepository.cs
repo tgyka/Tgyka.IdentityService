@@ -9,12 +9,13 @@ using Tgyka.IdentityService.Data.Repositories.Abstractions;
 using Tgyka.IdentityService.Database.Mssql.Data;
 using Tgyka.IdentityService.Database.Mssql.Data.Repository;
 using Tgyka.IdentityService.Database.Mssql.Data.UnitOfWork;
+using Tgyka.IdentityService.Database.Mssql.Model;
 
 namespace Tgyka.IdentityService.Data.Repositories.Implementations
 {
     public class PermissionRepository : BaseRepository<Permission>, IPermissionRepository
     {
-        public PermissionRepository(MssqlDbContext dbContext, IUnitOfWork unitofWork, IMapper mapper) : base(dbContext, unitofWork, mapper)
+        public PermissionRepository(MssqlDbContext dbContext, IUnitOfWork unitofWork, IMapper mapper, TokenUser tokenUser) : base(dbContext, unitofWork, mapper, tokenUser)
         {
         }
     }

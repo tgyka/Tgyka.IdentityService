@@ -19,7 +19,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tgyka.IdentityService.Core"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tgyka.IdentityService.JwtHelper", "Core\Tgyka.IdentityService.JwtHelper\Tgyka.IdentityService.JwtHelper.csproj", "{E7EADB1B-6030-4367-A7C1-D0D26CB61F07}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tgyka.IdentityService.PasswordHelper", "Core\Tgyka.IdentityService.PasswordHelper\Tgyka.IdentityService.PasswordHelper.csproj", "{73DB5F77-E868-492D-89CA-E8A54B03D55E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tgyka.IdentityService.PasswordHelper", "Core\Tgyka.IdentityService.PasswordHelper\Tgyka.IdentityService.PasswordHelper.csproj", "{73DB5F77-E868-492D-89CA-E8A54B03D55E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tgyka.IdentityService.Implementations.WebApiSample", "Implementations\Tgyka.IdentityService.Implementations.WebApiSample\Tgyka.IdentityService.Implementations.WebApiSample.csproj", "{9509D067-A52C-4DA7-8D34-902A54CF9B29}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +49,10 @@ Global
 		{73DB5F77-E868-492D-89CA-E8A54B03D55E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{73DB5F77-E868-492D-89CA-E8A54B03D55E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{73DB5F77-E868-492D-89CA-E8A54B03D55E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9509D067-A52C-4DA7-8D34-902A54CF9B29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9509D067-A52C-4DA7-8D34-902A54CF9B29}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9509D067-A52C-4DA7-8D34-902A54CF9B29}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9509D067-A52C-4DA7-8D34-902A54CF9B29}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -58,6 +64,7 @@ Global
 		{B9CD9AD9-0DCE-4AE5-B6BE-C71B2730BE6E} = {3A330D22-629B-41B6-B94F-2CA7B1E2E894}
 		{E7EADB1B-6030-4367-A7C1-D0D26CB61F07} = {3A330D22-629B-41B6-B94F-2CA7B1E2E894}
 		{73DB5F77-E868-492D-89CA-E8A54B03D55E} = {3A330D22-629B-41B6-B94F-2CA7B1E2E894}
+		{9509D067-A52C-4DA7-8D34-902A54CF9B29} = {79BE8066-C709-415B-BF43-7391796FD5F0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C1AD48D6-A4FB-4152-AB88-3919B5F6C6F9}

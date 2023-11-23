@@ -6,13 +6,11 @@ using System.Threading.Tasks;
 
 namespace Tgyka.IdentityService.Core.Models
 {
-    public class TokenUser
+    public class AuthModel
     {
         public int UserId { get; set; }
         public string Username { get; set; }
         public string Email { get; set; }
-        public int[] Roles { get; set; }
-        public int[] Permissions  { get; set; }
         public string AccessToken { get; set; }
     }
 }

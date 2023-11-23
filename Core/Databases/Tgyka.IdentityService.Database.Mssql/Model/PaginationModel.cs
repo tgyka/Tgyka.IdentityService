@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tgyka.IdentityService.Database.Mssql.Model.RepositoryDtos
+namespace Tgyka.IdentityService.Database.Mssql.Model
 {
-    public class PaginationList<T>
+    public class PaginationModel<T>
     {
-        public PaginationList(List<T> dataList, int count, int page, int size)
+        public PaginationModel(IEnumerable<T> dataList, int count, int page, int size)
         {
             DataList = dataList;
             Count = count;
@@ -16,7 +16,7 @@ namespace Tgyka.IdentityService.Database.Mssql.Model.RepositoryDtos
             Size = size;
         }
 
-        public List<T> DataList { get; set; }
+        public IEnumerable<T> DataList { get; set; }
         public int Count { get; set; }
         public int Page { get; set; }
         public int Size { get; set; }

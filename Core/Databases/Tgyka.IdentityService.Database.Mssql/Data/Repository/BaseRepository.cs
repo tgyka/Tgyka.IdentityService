@@ -3,96 +3,115 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using Tgyka.IdentityService.Database.Mssql.Data.UnitOfWork;
 using AutoMapper;
-using Tgyka.IdentityService.Database.Mssql.Model.RepositoryDtos;
+using Tgyka.IdentityService.Database.Mssql.Data.Enum;
+using Tgyka.IdentityService.Database.Mssql.Model;
 
 namespace Tgyka.IdentityService.Database.Mssql.Data.Repository
 {
     public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : BaseEntity
     {
-        private readonly MssqlDbContext _dbContext;
-        private readonly DbSet<TEntity> _dbSet;
-        private readonly IUnitOfWork _unitofWork;
-        private readonly IMapper _mapper;
+        protected readonly MssqlDbContext _dbContext;
+        protected readonly DbSet<TEntity> _dbSet;
+        protected readonly IUnitOfWork _unitOfWork;
+        protected readonly IMapper _mapper;
+        protected readonly TokenUser _tokenUser;
 
-        public BaseRepository(MssqlDbContext dbContext, IUnitOfWork unitofWork, IMapper mapper)
+        public BaseRepository(MssqlDbContext dbContext, IUnitOfWork unitofWork, IMapper mapper, TokenUser tokenUser)
         {
             _dbContext = dbContext;
             _dbSet = _dbContext.Set<TEntity>();
-            _unitofWork = unitofWork;
+            _unitOfWork = unitofWork;
             _mapper = mapper;
+            _tokenUser = tokenUser;
         }
 
-        public TEntity Get(Func<TEntity, bool> predicate = null, List<Expression<Func<TEntity, object>>> includes = null,
-            Func<TEntity, object> orderBySelector = null, bool isDescending = false)
+        public TEntity GetOne(Expression<Func<TEntity, bool>> predicate = null, List<Expression<Func<TEntity, object>>> includes = null,
+            Expression<Func<TEntity, object>> orderBySelector = null, bool isDescending = false)
         {
-            return Query(predicate, includes, orderBySelector, isDescending).FirstOrDefault();
+            return QueryCore(predicate, includes, orderBySelector, isDescending).FirstOrDefault();
         }
 
-        public PaginationList<TEntity> List(Func<TEntity, bool> predicate = null, List<Expression<Func<TEntity, object>>> includes = null,
-            Func<TEntity, object> orderBySelector = null, bool isDescending = false, int page = 0, int size = 0)
+        public List<TEntity> GetAll(Expression<Func<TEntity, bool>> predicate = null, List<Expression<Func<TEntity, object>>> includes = null,
+            Expression<Func<TEntity, object>> orderBySelector = null, bool isDescending = false, int page = 0, int size = 0)
         {
-            var query = Query(predicate, includes, orderBySelector, isDescending, page, size);
-            var data = query.ToList();
+            return QueryCore(predicate, includes, orderBySelector, isDescending, page, size).ToList();
+        }
+
+        public TMapped GetOneMapped<TMapped>(Expression<Func<TEntity, bool>> predicate = null, List<Expression<Func<TEntity, object>>> includes = null, Expression<Func<TEntity, object>> orderBySelector = null, bool isDescending = false)
+        {
+            return _mapper.Map<TMapped>(GetOne(predicate, includes, orderBySelector, isDescending));
+        }
+
+        public PaginationModel<TMapped> GetAllMapped<TMapped>(Expression<Func<TEntity, bool>> predicate = null, List<Expression<Func<TEntity, object>>> includes = null, Expression<Func<TEntity, object>> orderBySelector = null, bool isDescending = false, int page = 0, int size = 0)
+        {
+            var query = QueryCore(predicate, includes, orderBySelector, isDescending, page, size);
             var count = query.Count();
-            return new PaginationList<TEntity>(data, count, page, size);
+            var mappedData = _mapper.Map<List<TMapped>>(query.ToList());
+            return new PaginationModel<TMapped>(mappedData, count, page, size);
         }
 
-        public IQueryable<TEntity> GetQuery()
+        public int Count(Expression<Func<TEntity, bool>> predicate = null, List<Expression<Func<TEntity, object>>> includes = null,
+            Expression<Func<TEntity, object>> orderBySelector = null, bool isDescending = false)
+        {
+            return QueryCore(predicate, includes, orderBySelector, isDescending, 0, 0).Count();
+        }
+
+        public IQueryable<TEntity> Query()
         {
             return _dbSet.AsNoTracking();
         }
 
-        public TEntity Set(TEntity entity, CommandState state)
+        public void SetEntityState(TEntity entity, EntityCommandType type,int? userId = null)
         {
-            if (state == CommandState.SoftDelete)
+            var tokenUserId = userId ?? _tokenUser.UserId;
+
+            if (type == EntityCommandType.SoftDelete)
             {
                 entity.IsDeleted = true;
             }
 
-            _dbSet.Entry(entity).State = GetEntityStateFromCommandState(state);
-            return entity;
+            if(type == EntityCommandType.Update)
+            {
+                var olderEntity = GetOne(r => r.Id == entity.Id);
+                entity.CreatedBy = olderEntity.CreatedBy;
+                entity.CreatedDate = olderEntity.CreatedDate;
+                entity.ModifiedBy = tokenUserId;
+            }
+
+            if(type == EntityCommandType.Create)
+            {
+                entity.CreatedBy = tokenUserId;
+            }
+
+            _dbSet.Entry(entity).State = GetEntityStateFromEntityCommandType(type);
         }
 
-        public List<TEntity> Set(IEnumerable<TEntity> entitites, CommandState state)
+        public void SetEntityState(IEnumerable<TEntity> entitites, EntityCommandType type, int? userId = null)
         {
             foreach (var entry in entitites)
             {
-                Set(entry, state);
+                SetEntityState(entry, type, userId);
             }
-            return entitites.ToList();
         }
 
-        public TMapped GetWithMapper<TMapped>(Func<TEntity, bool> predicate = null, List<Expression<Func<TEntity, object>>> includes = null,
-            Func<TEntity, object> orderBySelector = null, bool isDescending = false)
-        {
-            return _mapper.Map<TMapped>(Get(predicate, includes, orderBySelector, isDescending));
-        }
-
-        public PaginationList<TMapped> ListWithMapper<TMapped>(Func<TEntity, bool> predicate = null, List<Expression<Func<TEntity, object>>> includes = null, Func<TEntity, object> orderBySelector = null, bool isDescending = false, int page = 0, int size = 0)
-        {
-            var response = List(predicate, includes, orderBySelector, isDescending, page, size);
-            var mappedData = _mapper.Map<List<TMapped>>(response.DataList);
-            return new PaginationList<TMapped>(mappedData, response.Count, response.Page, response.Size);
-        }
-
-        public async Task<TMapped> SetWithCommit<TRequest, TMapped>(TRequest request, CommandState state)
+        public async Task<TMapped> SetAndCommit<TRequest,TMapped>(TRequest request, EntityCommandType type,int? userId = null)
         {
             var entity = _mapper.Map<TEntity>(request);
-            var entityResponse = Set(entity, state);
-            await _unitofWork.CommitAsync();
-            return _mapper.Map<TMapped>(entityResponse);
+            SetEntityState(entity, type, userId);
+            await _dbContext.SaveChangesAsync();
+            return _mapper.Map<TMapped>(entity);
         }
 
-        public async Task<List<TMapped>> SetWithCommit<TRequest, TMapped>(List<TRequest> requests, CommandState state)
+        public async Task<List<TMapped>> SetAndCommit<TRequest, TMapped>(List<TRequest> requests, EntityCommandType type, int? userId = null)
         {
             var entities = _mapper.Map<IEnumerable<TEntity>>(requests);
-            var entitiesResponse = Set(entities, state);
-            await _unitofWork.CommitAsync();
-            return _mapper.Map<List<TMapped>>(entitiesResponse);
+            SetEntityState(entities, type, userId);
+            await _dbContext.SaveChangesAsync();
+            return _mapper.Map<List<TMapped>>(entities);
         }
 
-        private IEnumerable<TEntity> Query(Func<TEntity, bool> predicate, List<Expression<Func<TEntity, object>>> includes,
-            Func<TEntity, object> orderBySelector, bool isDescending, int page = 0, int size = 0)
+        private IEnumerable<TEntity> QueryCore(Expression<Func<TEntity, bool>> predicate, List<Expression<Func<TEntity, object>>> includes,
+            Expression<Func<TEntity, object>> orderBySelector, bool isDescending, int page = 0, int size = 0)
         {
             var query = _dbSet.AsNoTracking();
             query = query.Where(r => !r.IsDeleted);
@@ -105,55 +124,47 @@ namespace Tgyka.IdentityService.Database.Mssql.Data.Repository
                 }
             }
 
-            IEnumerable<TEntity> queryPredicate = query;
-
             if (predicate != null)
             {
-                queryPredicate = query.Where(predicate);
+                query = query.Where(predicate);
             }
 
             if (orderBySelector != null)
             {
-                if (isDescending) queryPredicate = queryPredicate.OrderByDescending(orderBySelector);
-                else queryPredicate = queryPredicate.OrderBy(orderBySelector);
+                if (isDescending) 
+                    query = query.OrderByDescending(orderBySelector);
+                else 
+                    query = query.OrderBy(orderBySelector);
             }
 
             if (page > 0)
             {
-                queryPredicate = query.Skip((page - 1) * size);
+                query = query.Skip((page - 1) * size) ;
             }
 
             if (size > 0)
             {
-                queryPredicate = query.Take(size);
+                query = query.Take(size);
             }
 
-            return queryPredicate;
+            return query;
         }
 
-        private EntityState GetEntityStateFromCommandState(CommandState commandState)
+        private EntityState GetEntityStateFromEntityCommandType(EntityCommandType entityCommandType)
         {
-            switch (commandState)
+            switch (entityCommandType)
             {
-                case CommandState.Create:
+                case EntityCommandType.Create:
                     return EntityState.Added;
-                case CommandState.Update:
+                case EntityCommandType.Update:
                     return EntityState.Modified;
-                case CommandState.SoftDelete:
+                case EntityCommandType.SoftDelete:
                     return EntityState.Modified;
-                case CommandState.HardDelete:
+                case EntityCommandType.HardDelete:
                     return EntityState.Deleted;
                 default:
                     return EntityState.Unchanged;
             }
         }
-    }
-
-    public enum CommandState
-    {
-        Create,
-        Update,
-        SoftDelete,
-        HardDelete
     }
 }

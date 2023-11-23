@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 using Tgyka.IdentityService.Core.Services.Abstractions;
 using Tgyka.IdentityService.Data.Entities;
 using Tgyka.IdentityService.Data.Repositories.Abstractions;
-using Tgyka.IdentityService.Database.Mssql.Data.Repository;
+using Tgyka.IdentityService.Database.Mssql.Data.Enum;
 using Tgyka.IdentityService.Database.Mssql.Data.UnitOfWork;
-using Tgyka.IdentityService.Database.Mssql.Model.RepositoryDtos;
 
 namespace Tgyka.IdentityService.Core.Services.Implementations
 {
@@ -25,33 +24,33 @@ namespace Tgyka.IdentityService.Core.Services.Implementations
 
         public User Get(int id)
         {
-            return _userRepository.Get(r => r.Id == id);    
+            return _userRepository.GetOne(r => r.Id == id);    
         }
 
-        public PaginationList<User> List(int page,int size)
+        public List<User> GetAll(int page,int size)
         {
-            return _userRepository.List(page: page, size: size);
+            return _userRepository.GetAll(page: page, size: size);
         }
 
         public async Task<User> Create(User user)
         {
-            var userResponse = _userRepository.Set(user,CommandState.Create);
+            _userRepository.SetEntityState(user,EntityCommandType.Create);
             await _unitOfWork.CommitAsync();
-            return userResponse;
+            return user;
         }
 
         public async Task<User> Update(User user)
         {
-            var userResponse = _userRepository.Set(user, CommandState.Update);
+            _userRepository.SetEntityState(user, EntityCommandType.Update);
             await _unitOfWork.CommitAsync();
-            return userResponse;
+            return user;
         }
 
         public async Task<User> Delete(User user)
         {
-            var userResponse = _userRepository.Set(user, CommandState.SoftDelete);
+            _userRepository.SetEntityState(user, EntityCommandType.SoftDelete);
             await _unitOfWork.CommitAsync();
-            return userResponse;
+            return user;
         }
     }
 }

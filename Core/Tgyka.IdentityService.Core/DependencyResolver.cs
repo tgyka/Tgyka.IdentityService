@@ -1,17 +1,11 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Tgyka.IdentityService.Core.Models;
 using Tgyka.IdentityService.Core.Services.Abstractions;
 using Tgyka.IdentityService.Core.Services.Implementations;
 using Tgyka.IdentityService.Data;
 using Tgyka.IdentityService.Data.Repositories.Abstractions;
 using Tgyka.IdentityService.Data.Repositories.Implementations;
+using Tgyka.IdentityService.Database.Mssql.Model;
 using Tgyka.IdentityService.JwtHelper.Models;
 
 namespace Tgyka.IdentityService.Core
